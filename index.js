@@ -368,19 +368,21 @@ module.exports = function AutoLockon(dispatch) {
 		if (partyMemberList.members) {
 			if (partyMemberList.members.length > 5) {
 				
-				for (let i in playerBuffs) {
-					if (getDistanceFromMe(playerBuffs[i].cid) >= MAXIMUM_DISTANCE) continue; // too far away
-					if (isPlayerDead(playerBuffs[i].cid)) continue; // is dead
+				// TODO: Fix raid cleansing
+				
+				// for (let i in playerBuffs) {
+					// if (getDistanceFromMe(playerBuffs[i].cid) >= MAXIMUM_DISTANCE) continue; // too far away
+					// if (isPlayerDead(playerBuffs[i].cid)) continue; // is dead
 					
-					if (playerHasAbnormality(playerBuffs[i].abnormals)) {
-						result.push({cid: playerBuffs[i].cid});
-					} else {
-					}
+					// if (playerHasAbnormality(playerBuffs[i].abnormals)) {
+						// result.push({cid: playerBuffs[i].cid});
+					// } else {
+					// }
 					
-					if (result.length >= 4)  {
-						break;
-					}
-				}
+					// if (result.length >= 4)  {
+						// break;
+					// }
+				// }
 			}
 			else // not in a raid
 			{
