@@ -8,6 +8,7 @@
 ## [Issues](https://github.com/teralove/auto-lockon/issues)
 * incompatible with skill-prediction
 * ghosting, does not compensate for lag. Try different values.
+* Healing targetting is unreliable in raids. No cleansing targetting in raids. Works better in parties only.
 
 ## Notes
 * Focus Heal(Priest and Mystic), will auto-lockon and immediately heal 4 party members with the lowest HP. Works up to 35m. Can remove the distance glyph and spend the points elsewhere.
