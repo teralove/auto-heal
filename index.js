@@ -13,104 +13,7 @@ const format = require('./format.js');
 		67159764: 67159774,//  mystic focus heal
 		67299764: 67299774, // priest focus heal
 		67198964: 67198974 // mystic cleanse
-	};
-	
-	
-	//
-	// Abnormality checks never fully worked properly, so there are ignored atm. Left the id codes just in case I did figure out a way.
-	//
-	PveAbnormals = [
-		801650, // ???
-		99000030, // VHHM 1st boss stun?
-		
-//		700802, //??
-		
-		980102, // ???
-		980202,  // VHHM Last boss debuff?
-		980203  // VHHM Last boss debuff?
-	];
-	
-	PvpAbnormals = [
-		701330, 701332, 701101, // mystic sleep?
-		701331, // mystic stunball
-		701320, // mystic fear
-		700501, // mystic zenobia
-		701421, // mystic mire
-//		701202, // mystic exhaustion
-//		701202, //Mystic Knock down?
-//		700829, //Mystic Volley (poison)
-//		27160, //Mystic Volley (endruance)
-
-		801202, //Priest sleep
-//		800800, //Priest Fiery SLow
-//		10153093, // Priest Fiery slow???
-//		801920, //Priest Vortex Knock up
-//		801901, //Priest Vortex Knock up
-		28070, //Priest Final Reprisal slow (glyph)
-
-		600800, //Archer CQ Kick
-		601201, //Archer Stun Trap (ranged)
-		600702, //Archer Web Shot
-//		601001, //Archer Restraining 			- Uncleansable
-		600300, //Archer Stun Trap (ground)
-		600400, //Archer Slow Trap (ground)
-		26210, //Archer Breakaway Bolt (Slow Glyph)	
-
-		10154021, //Ninja Chakra Thrus (Stab Stun)
-
-		303, //Sorc Lightning Trap (Ground)
-		500802, //Sorc Sleep
-		501400, //Sorc Hailstorm slow
-		500500, //Sorc Frost Sphere slow
-		500200, //Sorc Glacial Retreat slow
-		501323, //Sorc Time Gyre (Root)
-		500900, //Sorc Nerve Exhaustion (Silence)
-		500728, //Sorc Pain Blast (ground poison)
-
-		400200, //Zerk Staggering Strike
-//		400623, //Zerk Fearsome Shout (Fear)
-
-		300700, //Slayer Stunning Backhand
-		300900, //Slayer Exhausting Blow
-		300201, //Slayer Backstab root
-		300400, //Slayer Startling Kick
-
-		101001, //Warr Backstab stun
-		101400, //Warr Poison Blade
-		100527, //Warr Pounce
-		101220, //Warr Combative (endurance?)
-		88128200, //Warr Combative ???
-		101900, //Warr Binding Sword (Pull)
-		100300, //Warr Battle Cry stun
-		100901, //Warr Cascade stun
-		900200, //Warr Auto slow?
-
-//		200302, //Lanc Debilitate one of these is auto slow
-///		200352, //Lanc Debilitate
-		200400, //Lanc Shield Bash (Stun)
-//		200100, //Lanc Leash pull
-//		201400, //Lanc Chained Leash
-//		201103, //Lancer Lockdown Blow (slow)
-//		201200, //Lancer Menacing Wave 			-- Uncleansable
-
-
-		10151080, //Reaper Smite (stun)
-//		10151160, //Reaper whipsaw (heal reduction)
-		10151032, //Reaper Soul Reversal (mark)
-		10151033, //Reaper Soul Reversal (stun)
-		10151060, //Reaper Cable Step (stun)
-
-		10153140, //Brawler Hammered (endurance reduction)
-		10153030, //Brawler Flipkick (stun)
-
-		10152021, //Gunner Arc Bomb (stun)
-		10152033, //Gunner Time Bomb (movement speed?)
-//		10152030, //Time bomb lift
-//		10152034, //Time bomb lift
-		10152052, //Rapid Fire (slow)
-		10152230 //HB Self Destruct (stun)
-	];
-	
+	};	
 	
 	
 module.exports = function AutoLockon(dispatch) {
@@ -151,37 +54,7 @@ module.exports = function AutoLockon(dispatch) {
 		playerLocation.y = event.y1;
 		playerLocation.z = event.z1;
 	})	 
-	
-	dispatch.hook('S_PARTY_MEMBER_INTERVAL_POS_UPDATE', 2, (event) => {
-		if (!enabled) return;
-		if (!partyMemberList || !partyMemberList.members) return;
-
-		let playerIsInParty = false;
-		for (let i in partyMemberList.members) {
-			if (partyMemberList.members[i].cid - event.target == 0) {
-				playerIsInParty = true;
-			}
-		}
-		if (!playerIsInParty) return;
 		
-		for (let i in locations) {
-			if (locations[i].target - event.target == 0) {
-				locations[i].x = event.x;
-				locations[i].y = event.y;
-				locations[i].z = event.z;
-				return;
-			}
-		}
-		
-		locations.push({
-			target: event.target,
-			x: event.x,
-			y: event.y,
-			z: event.z
-		});	
-	})
-	
-	
 	dispatch.hook('S_USER_LOCATION', 1, (event) => {
 		if (!enabled) return;
 
@@ -239,10 +112,8 @@ module.exports = function AutoLockon(dispatch) {
 
 			let targetMembers;
 			if (event.skill == 67198964 || event.skill == 67198974) {
-				//console.log('cleansing');
 				targetMembers = getMembersToCleanse();
 			} else {
-				//console.log('healing');
 				targetMembers = getMembersToHeal();
 				
 			}
@@ -264,7 +135,7 @@ module.exports = function AutoLockon(dispatch) {
 							skill: event.skill,
 							ok: 1
 						})
-					}, 10);
+					}, 60);
 				}
 				
 				setTimeout(() => {
@@ -273,85 +144,16 @@ module.exports = function AutoLockon(dispatch) {
 					if (newEvent.skill) {
 						dispatch.toServer('C_START_SKILL', 1, newEvent);
 					}
-				}, 50);
+				}, 120);
 				
-			}
-		}
-	})	
-	
-	dispatch.hook('S_PARTY_MEMBER_ABNORMAL_ADD', 3, (event) => {
-		if (!enabled || !partyMemberList || !partyMemberList.members) return;
-		if (partyMemberList.members.length <= 5) return;
-				
-		for (let i in playerBuffs) {
-			if (playerBuffs[i].playerId == event.playerId) {
-				if (!playerBuffs[i].abnormals.includes(event.id)) {
-					playerBuffs[i].abnormals.push(event.id);
-				}
-				return;
-			}
-		}
-		
-		playerBuffs.push({
-			cid: getPlayerCid(event.playerId),
-			playerId: event.playerId,
-			abnormals: [event.id]
-		});		
-	})
-	
-	dispatch.hook('S_PARTY_MEMBER_ABNORMAL_REFRESH', 3, (event) => {
-		if (!enabled || !partyMemberList || !partyMemberList.members) return;
-		if (partyMemberList.members.length <= 5) return;
-		
-		for (let i in playerBuffs) {
-			if (playerBuffs[i].playerId == event.playerId) {
-				if (!playerBuffs[i].abnormals.includes(event.id)) {
-					playerBuffs[i].abnormals.push(event.id);
-				}
-				return;
-			}
-		}
-		
-		playerBuffs.push({
-			cid: getPlayerCid(event.playerId),
-			playerId: event.playerId,
-			abnormals: [event.id]
-		});		
-	})
-		
-	dispatch.hook('S_PARTY_MEMBER_ABNORMAL_DEL', 2, (event) => {
-		if (!enabled || !partyMemberList || !partyMemberList.members) return;
-		if (partyMemberList.members.length <= 5) return;
-		
-		for (let i in playerBuffs) {
-			if (playerBuffs[i].playerId == event.playerId) {
-				if (!playerBuffs[i].abnormals.includes(event.id)) {
-					let index = playerBuffs[i].abnormals.indexOf(event.id);
-					playerBuffs.splice(index, 1);
-				}
-				return;
 			}
 		}
 	})		
-	
-	dispatch.hook('S_PARTY_MEMBER_ABNORMAL_CLEAR', 1, (event) => {
-		if (!enabled || !partyMemberList || !partyMemberList.members) return;
-		if (partyMemberList.members.length <= 5) return;
-		
-		for (let i in playerBuffs) {
-			if (playerBuffs[i].playerId == event.playerId) {
-				playerBuffs[i].abnormals = [];
-				return;
-			}
-		}
-	})
-	
 	
 
 	dispatch.hook('S_PARTY_MEMBER_LIST', 5, (event) => {
 		
 		if (!enabled) return;
-		//playerLocation = {x: 0, y: 0, z: 0};
 		locations = [];
 		partyMemberList = event;
 		partyMemberStats = [];
@@ -366,23 +168,7 @@ module.exports = function AutoLockon(dispatch) {
 		}
 		
 		if (partyMemberList.members) {
-			if (partyMemberList.members.length > 5) {
-				
-				// TODO: Fix raid cleansing
-				
-				// for (let i in playerBuffs) {
-					// if (getDistanceFromMe(playerBuffs[i].cid) >= MAXIMUM_DISTANCE) continue; // too far away
-					// if (isPlayerDead(playerBuffs[i].cid)) continue; // is dead
-					
-					// if (playerHasAbnormality(playerBuffs[i].abnormals)) {
-						// result.push({cid: playerBuffs[i].cid});
-					// } else {
-					// }
-					
-					// if (result.length >= 4)  {
-						// break;
-					// }
-				// }
+			if (partyMemberList.members.length > 5) { //in a raid
 			}
 			else // not in a raid
 			{
@@ -398,59 +184,26 @@ module.exports = function AutoLockon(dispatch) {
 				}
 			}
 		}
-
-		
-/* 		if (partyMemberList.members.length > 5) {
-			for (let i in playerBuffs) {
-				if (playerBuffs[i].playerId == event.playerId) {
-					if (!playerBuffs[i].abnormals.includes(event.id)) {
-						let index = playerBuffs[i].abnormals.indexOf(event.id);
-						playerBuffs.splice(index, 1);
-					}
-					break;
-				}
-			}
-		} */
-		
 		
 		return result;
 	}
-	
-	function playerHasAbnormality(memberAbnormals) {
-		if (memberAbnormals) {
-			for (let i = 0; i < memberAbnormals.length; i++) {				
-				if (PveAbnormals.includes(memberAbnormals[i]) || PvpAbnormals.includes(memberAbnormals[i]) ) {
-					
-					let index = -1;
-					index = PveAbnormals.indexOf(memberAbnormals[i]);
-					if (index >= 0)
-						PveAbnormals.splice(index, 1);
-					
-					index = -1;
-					index = PvpAbnormals.indexOf(memberAbnormals[i]);
-					if (index >= 0)
-						PvpAbnormals.splice(index, 1);
-					
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
+		
 	function getMembersToHeal()
 	{
 		let result = [];
 		// get list of players that need heals and can be healed
 		for (let i in partyMemberStats) {
-			if (getDistanceFromMe(partyMemberStats[i].cid) >= MAXIMUM_DISTANCE) { // too far away
+			if (getDistanceFromMe(partyMemberStats[i].cid) >= MAXIMUM_DISTANCE)  // too far away
 				continue;
-			} else if (partyMemberStats[i].percHp > MAXIMUM_HP || partyMemberStats[i].percHp == 0) { // is full or dead
-				continue;
-			}
+            if (partyMemberStats[i].percHp == 0)
+                continue;
+            
+			//} else if (partyMemberStats[i].percHp > MAXIMUM_HP || partyMemberStats[i].percHp == 0) { // is full or dead
+			//	continue;
+			//}
 			result.push(partyMemberStats[i]);
-		}
-		
+            
+        }
 		// if in a raid, make sure only 4 maximum is locked on
 		if (partyMemberStats.length > 4) {			
 			// trim out the strongest ones
