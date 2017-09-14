@@ -1,20 +1,22 @@
-// vers 0.0.0b
+// vers 0.0.2b
 
 const format = require('./format.js');
 
-	Skills = [
-		67299764,	// priest heal
-		67159764,	// mystic heal
-		67198964	// mystic cleanse
-	];
-	
-	// lockOn : cast
-	LockOnCast = {
-		67159764: 67159774,//  mystic focus heal
-		67299764: 67299774, // priest focus heal
-		67198964: 67198974 // mystic cleanse
-	};	
-	
+    Skills = [
+        67299764, // priest heal IX
+        67159764, // mystic heal IX
+        67159864, // mystic heal X
+        67198964  // mystic cleanse
+    ];
+    
+    // lockOn : cast
+    LockOnCast = {
+        67299764: 67299774, // priest focus heal IX
+        67159764: 67159774, // mystic focus heal IX
+        67159864: 67159874, // mystic focus heal X
+        67198964: 67198974  // mystic cleanse
+    };	
+    
 	
 module.exports = function AutoLockon(dispatch) {
 	
