@@ -39,15 +39,15 @@ LockOnCast = {
 	67299764: 67299774, // priest focus heal IX
 
 	67158964: 67158974, // mystic focus heal I
-	//67159064: 67159074, // mystic focus heal II
-	//67159164: 67159174, // mystic focus heal III
-	//67159264: 67159274, // mystic focus heal IV
-	//67159364: 67159374, // mystic focus heal V
-	//67159464: 67159474, // mystic focus heal VI
-	//67159564: 67159574, // mystic focus heal VII
-	//67159664: 67159674, // mystic focus heal VIII
-	//67159764: 67159774, // mystic focus heal IX
-	//67159864: 67159874, // mystic focus heal X
+	67159064: 67159074, // mystic focus heal II
+	67159164: 67159174, // mystic focus heal III
+	67159264: 67159274, // mystic focus heal IV
+	67159364: 67159374, // mystic focus heal V
+	67159464: 67159474, // mystic focus heal VI
+	67159564: 67159574, // mystic focus heal VII
+	67159664: 67159674, // mystic focus heal VIII
+	67159764: 67159774, // mystic focus heal IX
+	67159864: 67159874, // mystic focus heal X
 	67198964: 67198974  // mystic cleanse
 };
 
