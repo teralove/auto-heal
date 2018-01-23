@@ -1,6 +1,7 @@
 // vers 0.0.3b
 
 const format = require('./format.js');
+const identified = require('./identified.js');
 
 Skills = [
 	67298964, // priest heal I
@@ -66,6 +67,7 @@ module.exports = function AutoLockon(dispatch) {
 	let partyMemberList = [];
 	let partyMemberStats = [];
 	let playerBuffs = [];
+	var oldcleance = true // make false if you want to have new cleance
 
 	dispatch.hook('S_LOGIN', 2, (event) => {
 		userId = event.playerId;
@@ -186,6 +188,21 @@ module.exports = function AutoLockon(dispatch) {
 		}
 	})
 
+	var test = 1, abnormal1 = ['none'], abnormal2 = ['none'];
+	dispatch.hook('S_PARTY_MEMBER_ABNORMAL_ADD', 3, event => {
+		var find = Identified.Debuff.indexOf(event.id);
+		if (find != -1) {
+			abnormal1[test] = [event.playerId];
+			abnormal2[test] = [event.id];
+		}
+		test = abnormal1.length
+	});
+
+	dispatch.hook('S_PARTY_MEMBER_ABNORMAL_DEL', 2, event => {
+		var find = abnormal1.indexOf(event.playerId);
+		var find2 = abnormal2.indexOf(event.id);
+		if (find != -1 && find == find2) {arr.splice(find, find);}
+	});
 
 	dispatch.hook('S_PARTY_MEMBER_LIST', 5, (event) => {
 
@@ -212,10 +229,20 @@ module.exports = function AutoLockon(dispatch) {
 					if (partyMemberList.members[i].playerId != userId) {
 						if (getDistanceFromMe(partyMemberList.members[i].cid) > MAXIMUM_DISTANCE) continue;
 						if (isPlayerDead(partyMemberList.members[i].cid)) continue;
-
-						// TODO: Check if player has abnormality?
-
-						result.push({cid: partyMemberList.members[i].cid});
+						if (oldcleance == false) {
+							if (test > 1) {
+								for (a = 1; a < test; a++) {
+									if (partyMemberList.members[i].playerId == abnormal1[a]) {
+										result.push({cid: partyMemberList.members[i].cid});
+									}
+									//console.log('%j', 'Player: ' + abnormal1[a] + ' Skill: ' + abnormal2[a])
+								}
+							}
+							// TODO: Check if player has abnormality?
+						} else {
+							//console.log('%j', partyMemberList.members[i].cid);
+							result.push({cid: partyMemberList.members[i].cid});
+						}
 					}
 				}
 			}
