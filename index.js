@@ -1,4 +1,4 @@
-// vers 0.0.3b
+// vers 0.0.4b
 
 const format = require('./format.js');
 const identified = require('./identified.js');
@@ -30,25 +30,25 @@ Skills = [
     // lockOn : auto cast
 LockOnCast = {
 	67298964: 67298974, // priest focus heal I
-	67299064: 67299074, // priest focus heal II
-	67299164: 67299174, // priest focus heal III
-	67299264: 67299274, // priest focus heal IV
-	67299364: 67299374, // priest focus heal V
-	67299464: 67299474, // priest focus heal VI
-	67299564: 67299574, // priest focus heal VII
-	67299664: 67299674, // priest focus heal VIII
-	67299764: 67299774, // priest focus heal IX
+	//67299064: 67299074, // priest focus heal II
+	//67299164: 67299174, // priest focus heal III
+	//67299264: 67299274, // priest focus heal IV
+	//67299364: 67299374, // priest focus heal V
+	//67299464: 67299474, // priest focus heal VI
+	//67299564: 67299574, // priest focus heal VII
+	//67299664: 67299674, // priest focus heal VIII
+	//67299764: 67299774, // priest focus heal IX
 
 	67158964: 67158974, // mystic focus heal I
-	67159064: 67159074, // mystic focus heal II
-	67159164: 67159174, // mystic focus heal III
-	67159264: 67159274, // mystic focus heal IV
-	67159364: 67159374, // mystic focus heal V
-	67159464: 67159474, // mystic focus heal VI
-	67159564: 67159574, // mystic focus heal VII
-	67159664: 67159674, // mystic focus heal VIII
-	67159764: 67159774, // mystic focus heal IX
-	67159864: 67159874, // mystic focus heal X
+	//67159064: 67159074, // mystic focus heal II
+	//67159164: 67159174, // mystic focus heal III
+	//67159264: 67159274, // mystic focus heal IV
+	//67159364: 67159374, // mystic focus heal V
+	//67159464: 67159474, // mystic focus heal VI
+	//67159564: 67159574, // mystic focus heal VII
+	//67159664: 67159674, // mystic focus heal VIII
+	//67159764: 67159774, // mystic focus heal IX
+	//67159864: 67159874, // mystic focus heal X
 	67198964: 67198974  // mystic cleanse
 };
 
@@ -67,7 +67,7 @@ module.exports = function AutoLockon(dispatch) {
 	let partyMemberList = [];
 	let partyMemberStats = [];
 	let playerBuffs = [];
-	var oldcleance = true // make false if you want to have new cleance
+	var oldcleance = false // make true if you want to have old cleance
 
 	dispatch.hook('S_LOGIN', 2, (event) => {
 		userId = event.playerId;
@@ -199,9 +199,12 @@ module.exports = function AutoLockon(dispatch) {
 	});
 
 	dispatch.hook('S_PARTY_MEMBER_ABNORMAL_DEL', 2, event => {
-		var find = abnormal1.indexOf(event.playerId);
-		var find2 = abnormal2.indexOf(event.id);
-		if (find != -1 && find == find2) {arr.splice(find, find);}
+		for (i = 0; i < test; i++) {
+			if (event.playerId == abnormal1[i] && event.id == abnormal2[i]) {
+				abnormal1.splice(i, i);
+				abnormal2.splice(i, i);
+			};
+		};
 	});
 
 	dispatch.hook('S_PARTY_MEMBER_LIST', 5, (event) => {
@@ -235,12 +238,9 @@ module.exports = function AutoLockon(dispatch) {
 									if (partyMemberList.members[i].playerId == abnormal1[a]) {
 										result.push({cid: partyMemberList.members[i].cid});
 									}
-									//console.log('%j', 'Player: ' + abnormal1[a] + ' Skill: ' + abnormal2[a])
 								}
 							}
-							// TODO: Check if player has abnormality?
 						} else {
-							//console.log('%j', partyMemberList.members[i].cid);
 							result.push({cid: partyMemberList.members[i].cid});
 						}
 					}
