@@ -1,4 +1,4 @@
-// vers 0.0.4b
+// vers 0.5
 
 const format = require('./format.js');
 const identified = require('./identified.js');
@@ -194,6 +194,10 @@ module.exports = function AutoLockon(dispatch) {
 		if (find != -1) {
 			abnormal1[test] = [event.playerId];
 			abnormal2[test] = [event.id];
+		} else if (event.id > 99000000 && event.id < 99009990) {
+			abnormal1[test] = [event.playerId];
+			abnormal2[test] = [event.id];
+			console.log('%j', 'There is new debuff possibly, please check: ' + abnormal2[test]);
 		}
 		test = abnormal1.length
 	});
@@ -224,24 +228,27 @@ module.exports = function AutoLockon(dispatch) {
 		}
 
 		if (partyMemberList.members) {
-			if (partyMemberList.members.length > 5) { //in a raid
-			}
-			else // not in a raid
-			{
+			if (oldcleance == true) {
+				if (partyMemberList.members.length < 6) {
+					for (let i in partyMemberList.members) {
+						if (partyMemberList.members[i].playerId != userId) {
+							if (getDistanceFromMe(partyMemberList.members[i].cid) > MAXIMUM_DISTANCE) continue;
+							if (isPlayerDead(partyMemberList.members[i].cid)) continue;
+							result.push({cid: partyMemberList.members[i].cid});
+						}
+					}
+				}
+			} else {
 				for (let i in partyMemberList.members) {
 					if (partyMemberList.members[i].playerId != userId) {
 						if (getDistanceFromMe(partyMemberList.members[i].cid) > MAXIMUM_DISTANCE) continue;
 						if (isPlayerDead(partyMemberList.members[i].cid)) continue;
-						if (oldcleance == false) {
-							if (test > 1) {
-								for (a = 1; a < test; a++) {
-									if (partyMemberList.members[i].playerId == abnormal1[a]) {
-										result.push({cid: partyMemberList.members[i].cid});
-									}
+						if (test > 1) {
+							for (a = 1; a < test; a++) {
+								if (partyMemberList.members[i].playerId == abnormal1[a]) {
+									result.push({cid: partyMemberList.members[i].cid});
 								}
 							}
-						} else {
-							result.push({cid: partyMemberList.members[i].cid});
 						}
 					}
 				}
