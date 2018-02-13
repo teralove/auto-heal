@@ -14,3 +14,9 @@
 * Focus Heal(Priest and Mystic), will auto-lockon and immediately heal 4 party members with the lowest HP. Works up to 35m. Can remove the distance glyph and spend the points elsewhere.
 * Mystic Cleanse, will auto-cleanse everyone in a party. Also works up to 35m. Disabled while in raid because there were some problems prioritizing abnormalities and ignoring uncleansable debuffs. 
 * Still buggy.
+
+## ON TEST!
+* To test new cleance system you should change from [var oldcleance = true] to [var oldcleance = false] in the code on line 70
+* First what you should do it get more ID of Debuff's, to do it pls check https://github.com/Ariorh1337/logs-unusual-effects
+* When you will have ID of Debuff, you can add it in [identified.js] just add it to the end with a comma.
+* Now i will update only [identified.js]
