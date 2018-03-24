@@ -1,16 +1,50 @@
-# Auto Lockon
+# auto-heal
+tera-proxy module that skips lockons and automatically heals and cleanses party members.
 
-- Instantly Focus Heal and cleanse party members without needing to lockon.
+## Dependency
+- `Command` module
 
-## Commands:
-* **!autolockon**    - Toggles on/off
+## Usage
+### `autoheal`
+- Toggle on/off
+- Default is on
+### `autocleanse`
+- Toggle on/off
+- Default is on
 
-## [Issues](https://github.com/teralove/auto-lockon/issues)
-* incompatible with skill-prediction
-* ghosting, does not compensate for lag. Try different values.
-* Heal targetting is unreliable in raids (I recommend disabling module). No cleanse targetting in raids. Works better in parties only.
+## Info
+- **Skills affected**:
+-- Priest
+--- Focus Heal
+-- Mystic
+--- Titanic Favor
+--- Arun's Cleansing Touch
+- Heal will auto-lockon and immediately heal up to 4 party members with the lowest HP.
+- Mystic's cleanse works only in parties of 5 members or less. Disabled in raids!
+- Skills work up to 35m. You can remove the distance glyph and spend the points elsewhere.
 
-## Notes
-* Focus Heal(Priest and Mystic), will auto-lockon and immediately heal 4 party members with the lowest HP. Works up to 35m. Can remove the distance glyph and spend the points elsewhere.
-* Mystic Cleanse, will auto-cleanse everyone in a party. Also works up to 35m. Disabled while in raid because there were some problems prioritizing abnormalities and ignoring uncleansable debuffs. 
-* Still buggy.
+## Changelog
+<details>
+
+    2.01
+    - Renamed module from auto-lockon to auto-heal
+    2.00
+    - Rewrote module
+    - Fixed bug: Casting skills would rotate the player towards north.
+    - Fixed bug: Locking and casting onto dead targets
+    - Added Command dependency
+    - Added autocleanse command
+    - Removed slash support
+    1.20
+    - Added heal skills for or lvl characters. You can use it even if u have lowlvl char.
+    - Fix hp choosing bug, now targets with full hp will not receive heal.
+    1.12
+    - Added mystic's focus heal X
+    1.11
+    - Code aesthetics
+    1.10
+    - Disabled raid cleanse
+
+</details>
+
+---
