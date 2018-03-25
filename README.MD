@@ -10,13 +10,12 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 - Default is on
 
 ## Info
-- Skills affected
--- Priest
---- Focus Heal
---- Immersion Heal
--- Mystic
---- Titanic Favor
---- Arun's Cleansing Touch
+| Skills affected                 |
+| ------------------------------- |
+| Priest - Focus Heal             |
+| Mystic - Titanic Favor          |
+| Mystic - Arun's Cleansing Touch |
+} Arun's Cleansing Touch          |
 - Heals will instantly auto-lockon and heal party members. Prioritizing the lowest HP.
 - Mystic's cleanse only works in parties of 5 members or less. Disabled in raids.
 
