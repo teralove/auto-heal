@@ -1,8 +1,5 @@
 # auto-heal
-tera-proxy module that skips lockons and automatically heals and cleanses party members.
-
-## Dependency
-- `Command` module
+tera-proxy module that skips lockons and instantly heals and cleanses party members.
 
 ## Usage
 ### `autoheal`
@@ -13,23 +10,27 @@ tera-proxy module that skips lockons and automatically heals and cleanses party 
 - Default is on
 
 ## Info
-| Skills affected                 |
-| ------------------------------- |
-| Priest - Focus Heal             |
-| Mystic - Titanic Favor          |
-| Mystic - Arun's Cleansing Touch |
-- Heal will auto-lockon and immediately heal up to 4 party members with the lowest HP.
-- Mystic's cleanse works only in parties of 5 members or less. Disabled in raids!
-- Skills work up to 35m. You can remove the distance glyph and spend the points elsewhere.
+- Skills affected
+-- Priest
+--- Focus Heal
+--- Immersion Heal
+-- Mystic
+--- Titanic Favor
+--- Arun's Cleansing Touch
+- Heals will instantly auto-lockon and heal party members. Prioritizing the lowest HP.
+- Mystic's cleanse only works in parties of 5 members or less. Disabled in raids.
 
 ## Changelog
 <details>
 
-    2.01
-    - Renamed module from auto-lockon to auto-heal
-    2.00
-    - Rewrote module
-    - Fixed bug: Casting skills would rotate the player towards north.
+    1.40
+    - Faster response
+    - Added Priest's Immersion skill.
+    - Glyphs affect number of lockon targets.
+    - Fixed bug: Casting skills would ignore player rotation
+    - Reduced max distance to 30m
+    1.30
+    - Code update and aesthetics
     - Fixed bug: Locking and casting onto dead targets
     - Added Command dependency
     - Added autocleanse command
