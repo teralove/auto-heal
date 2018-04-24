@@ -5,6 +5,7 @@
 // - C_PLAYER_LOCATION
 // - S_SPAWN_USER
 // - S_USER_LOCATION
+// - S_USER_LOCATION_IN_ACTION
 // - S_PARTY_MEMBER_CHANGE_HP
 // - C_START_SKILL
 // - S_CREST_INFO
@@ -72,6 +73,17 @@ module.exports = function AutoHeal(dispatch) {
     })
     
     dispatch.hook('S_USER_LOCATION', 3, (event) => {
+        if (partyMembers.length != 0) {
+            for (let i = 0; i < partyMembers.length; i++) {
+                if (partyMembers[i].gameId.equals(event.gameId)) {
+                    partyMembers[i].loc = event.loc;
+                    return;
+                }
+            }
+        }
+    })
+    
+    dispatch.hook('S_USER_LOCATION_IN_ACTION', 2, (event) => {
         if (partyMembers.length != 0) {
             for (let i = 0; i < partyMembers.length; i++) {
                 if (partyMembers[i].gameId.equals(event.gameId)) {

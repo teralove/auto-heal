@@ -24,6 +24,8 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 ## Changelog
 <details>
 
+    1.42
+    - Added S_USER_LOCATION_IN_ACTION hook. (Fixes issue with brawlers not getting lockons)
     1.41
     - Updated protocol versions.
     - Set max distance to 32m
