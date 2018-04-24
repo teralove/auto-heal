@@ -24,7 +24,7 @@ module.exports = function AutoHeal(dispatch) {
         ]
     };
     
-    const MaxDistance = 30; // in-game meters. can work up to 35m but can look suspicious
+    const MaxDistance = 32; // in-game meters. can work up to 35m
     const MaxHp = 0.97;     //(healing) ignore members that have more HP% than this
     
     let enabled = true,
@@ -47,7 +47,7 @@ module.exports = function AutoHeal(dispatch) {
         command.message('(auto-heal) Cleansing ' + (enabled ? 'enabled' : 'disabled'));
     });
     
-    dispatch.hook('S_LOGIN', 9, (event) => {
+    dispatch.hook('S_LOGIN', 10, (event) => {
         playerId = event.playerId;
         job = (event.templateId - 10101) % 100;
         (Skills[job]) ? enabled = true : enabled = false; 
@@ -105,7 +105,7 @@ module.exports = function AutoHeal(dispatch) {
         }
     })
     
-    dispatch.hook('C_START_SKILL', 4, (event) => {
+    dispatch.hook('C_START_SKILL', 5, (event) => {
         if (!enabled) return;
         if (partyMembers.length == 0) return; // be in a party
         if ((event.skill - 0x4000000) / 10 & 1 != 0) { // is casting (opposed to locking on)
@@ -142,7 +142,7 @@ module.exports = function AutoHeal(dispatch) {
                 }
                 
                 setTimeout(() => {
-                    dispatch.toServer('C_START_SKILL', 4, Object.assign({}, event, {w: playerLocation.w, skill: (event.skill + 10)}));
+                    dispatch.toServer('C_START_SKILL', 5, Object.assign({}, event, {w: playerLocation.w, skill: (event.skill + 10)}));
                 }, 10);
             }
         }

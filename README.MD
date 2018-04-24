@@ -24,6 +24,9 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 ## Changelog
 <details>
 
+    1.41
+    - Updated protocol versions.
+    - Set max distance to 32m
     1.40
     - Faster response
     - Added: Priest's Immersion skill.
@@ -37,7 +40,7 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
     - Added autocleanse command
     - Removed slash support
     1.20
-    - Added heal skills for or lvl characters. You can use it even if u have lowlvl char.
+    - Added heal skills for low level characters.
     - Fix hp choosing bug, now targets with full hp will not receive heal.
     1.12
     - Added mystic's focus heal X
