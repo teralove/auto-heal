@@ -17,7 +17,7 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 - Toggle on/off
 - Default is on
 ### `autoheal [on/off]`
-- Enable/disable auto-heals
+- Enables/disables auto-heals
 ### `autoheal [HP]`
 - Set cutoff for healing. ('autoheal 50' = ignore members with >50% HP. Set to 100 to always heal)
 - Default cutoff is 97%
@@ -25,10 +25,10 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 - Toggle on/off
 - Default is on
 ### `autocleanse [on/off]`
-- Enable/disable auto-cleansing
+- Enables/disables auto-cleansing
 
 ## Issues
-- Skills can ghost if proxy is also using Skill-Prediction (You see animation but nothing happens). [Click here for workaround.](https://i.imgur.com/bS4VkbX.png)
+- Skills can ghost if proxy is also using Skill-Prediction (You see animation but nothing happens). Workaround is to disable the skills in SP. [Click here to see how](https://i.imgur.com/bS4VkbX.png)
 
 ## Changelog
 <details>
@@ -45,7 +45,7 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
     - Fixed: Mod would briefly stop working when a dead party member resses.
     - Fixed: Mod would briefly stop working after toggling via command toggle.
     1.42
-    - Added S_USER_LOCATION_IN_ACTION hook. (Fixes issue with brawlers not getting lockons)
+    - Added S_USER_LOCATION_IN_ACTION hook.
     1.41
     - Updated protocol versions.
     - Set max distance to 32m
