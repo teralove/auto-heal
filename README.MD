@@ -2,7 +2,7 @@
 tera-proxy module that skips lockons and instantly heals and cleanses party members.
 
 ## Info
-- Heals will instantly auto-lockon and heal party members. Prioritizing the lowest HP.
+- Skills will instantly lockon and heal/cleanse party members. Heals prioritize the lowest HP.
 - Mystic's cleanse only works in parties of 5 members or less. Disabled in raids.
 
 | Skills affected                 |
@@ -16,14 +16,34 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 ### `autoheal`
 - Toggle on/off
 - Default is on
+### `autoheal [on/off]`
+- Enable/disable auto-heals
+### `autoheal [HP]`
+- Set cutoff for healing. ('autoheal 50' = ignore members with >50% HP. Set to 100 to always heal)
+- Default cutoff is 97%
 ### `autocleanse`
 - Toggle on/off
 - Default is on
+### `autocleanse [on/off]`
+- Enable/disable auto-cleansing
 
+## Issues
+- Skills can ghost if proxy is also using Skill-Prediction (You see animation but nothing happens). [Click here for workaround.](https://i.imgur.com/bS4VkbX.png)
 
 ## Changelog
 <details>
 
+    1.5
+    - New: autoheal and autocleanse commands toggle only their respectable behaviours. 
+    - New: autoheal command has argument to set HP cutoff.
+    - New: autoheal command has argument to toggle on/off explicitly ('autoheal on/off')
+    - New: autocleanse command has argument to toggle on/off explicitly ('autocleanse on/off')
+    - New: Vertical distance check.
+    - Fixed: Sometimes still locking onto dead players.
+    - Fixed: Locking onto players that left the party.
+    - Fixed: Mod would only start working on players when they had moved.
+    - Fixed: Mod would briefly stop working when a dead party member resses.
+    - Fixed: Mod would briefly stop working after toggling via command toggle.
     1.42
     - Added S_USER_LOCATION_IN_ACTION hook. (Fixes issue with brawlers not getting lockons)
     1.41
