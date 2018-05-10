@@ -33,6 +33,8 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 ## Changelog
 <details>
 
+    1.51
+    - New: Added support for Caali auto-update.
     1.5
     - New: autoheal and autocleanse commands toggle only their respectable behaviours. 
     - New: autoheal command has argument to set HP cutoff.

@@ -1,0 +1,26 @@
+{
+  "files": {
+    "index.js": "c4e22cb88c27ed522ff7e372c44ec387f4d3ae7d978d2fc9b48121856edb3b59",
+    "module.json": "159c9e5e3bffa4cb63158e1cf13063e548982a88292de53c322aa99c65a0641a",
+    "README.MD": "883c1615ab9ad3bf799aa55bb4e6c66a9298f867ef9de695323ffbee792f978d"
+  },
+  "defs": {
+    "S_LOGIN": 10,
+    "S_PARTY_MEMBER_LIST": 6,
+    "S_LEAVE_PARTY": 1,
+    "C_PLAYER_LOCATION": 3,
+    "S_SPAWN_ME": 2,
+    "S_SPAWN_USER": 13,
+    "S_USER_LOCATION": 3,
+    "S_USER_LOCATION_IN_ACTION": 2,
+    "S_INSTANT_DASH": 3,
+    "S_PARTY_MEMBER_CHANGE_HP": 3,
+    "S_PARTY_MEMBER_STAT_UPDATE": 3,
+    "S_DEAD_LOCATION": 2,
+    "S_LEAVE_PARTY_MEMBER": 2,
+    "S_LOGOUT_PARTY_MEMBER": 1,
+    "C_START_SKILL": 5,
+    "S_CREST_INFO": 2,
+    "S_CREST_APPLY": 2
+  }
+}
