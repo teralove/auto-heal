@@ -200,6 +200,16 @@ module.exports = function AutoHeal(dispatch) {
         }
     });
     
+    dispatch.hook('S_BAN_PARTY_MEMBER', 1, (event) => {
+        if (!enabled) return;
+        for (let i = 0; i < partyMembers.length; i++) {
+            if (partyMembers[i].playerId === event.playerId) {
+                partyMembers.splice(i, 1);
+                return;
+            }
+        }
+    });
+    
     dispatch.hook('C_START_SKILL', 5, (event) => {
         if (!enabled) return;
         if (partyMembers.length == 0) return; // be in a party
@@ -210,7 +220,7 @@ module.exports = function AutoHeal(dispatch) {
         let skill = Math.floor((event.skill - 0x4000000) / 10000);
         
         if(Skills[job] && Skills[job].includes(skill)) {
-            if(skill != 9 && !autoHeal) return; //return; // skip heal if disabled
+            if(skill != 9 && !autoHeal) return; // skip heal if disabled
             if(skill == 9 && !autoCleanse) return; // skip cleanse if disabled
             if(skill == 9 && partyMembers.length > 4) return; // skip cleanse if in a raid
             
@@ -220,7 +230,7 @@ module.exports = function AutoHeal(dispatch) {
             for (let i = 0; i < partyMembers.length; i++) {
                 if (partyMembers[i].online &&
                     partyMembers[i].hpP != undefined &&
-                    partyMembers[i].hpP > 0 &&
+                    partyMembers[i].hpP != 0 &&
                     ((skill == 9) ? true : partyMembers[i].hpP <= hpCutoff) && // (cleanse) ignore max hp
                     partyMembers[i].loc != undefined &&
                     (partyMembers[i].loc.dist3D(playerLocation.loc) / 25) <= MaxDistance && 

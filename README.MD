@@ -33,6 +33,9 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 ## Changelog
 <details>
 
+    1.52
+    - Fix: Lockons ignoring berserkers with negative health
+    - Fix: Locking onto kicked party members
     1.51
     - New: Added support for Caali auto-update.
     1.5
