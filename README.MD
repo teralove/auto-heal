@@ -4,6 +4,7 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 ## Info
 - Skills will instantly lockon and heal/cleanse party members. Heals prioritize the lowest HP.
 - Mystic's cleanse only works in parties of 5 members or less. Disabled in raids.
+- Auto-casting can be disabled (Skills will pre-lockon onto targets and need to be manually pressed again to cast).
 
 | Skills affected                 |
 | ------------------------------- |
@@ -26,6 +27,11 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 - Default is on
 ### `autocleanse [on/off]`
 - Enables/disables auto-cleansing
+### `autocast`
+- Toggle on/off
+- Default is on
+### `autocast [on/off]`
+- Enables/disables auto-casting
 
 ## Issues
 - Skills can ghost if proxy is also using Skill-Prediction (You see animation but nothing happens). Workaround is to disable the skills in SP. [Click here to see how](https://i.imgur.com/bS4VkbX.png)
@@ -33,18 +39,22 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 ## Changelog
 <details>
 
+    1.60
+    - New: autocast command and feature
+    - New: Configs stored in separate file
+    - New: Debug command
     1.52
     - Fix: Lockons ignoring berserkers with negative health
     - Fix: Locking onto kicked party members
     1.51
     - New: Added support for Caali auto-update.
-    1.5
+    1.50
     - New: autoheal and autocleanse commands toggle only their respectable behaviours. 
     - New: autoheal command has argument to set HP cutoff.
     - New: autoheal command has argument to toggle on/off explicitly ('autoheal on/off')
     - New: autocleanse command has argument to toggle on/off explicitly ('autocleanse on/off')
     - New: Vertical distance check.
-    - Fixed: Sometimes still locking onto dead players.
+    - ~~Fixed: Sometimes still locking onto dead players.~~
     - Fixed: Locking onto players that left the party.
     - Fixed: Mod would only start working on players when they had moved.
     - Fixed: Mod would briefly stop working when a dead party member resses.

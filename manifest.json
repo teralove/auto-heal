@@ -1,8 +1,12 @@
 {
   "files": {
-    "index.js": "eb8be16ad662ac514b986394ba5bbfcc34ce19c03eaa65a5fc71876d8bd6aff3",
+    "config.json": {
+        "overwrite": false,
+        "hash": "2fca7244ab4ae074bd8402283528915879eaf143239505e9de98e32ac680e6f5"
+    },
+    "index.js": "33186b416b5fe63cabd25ed92092c4d9fa351bd19a4a90c6564c3254bee37532",
     "module.json": "b2dd6257290c3587ab1a8429cc5628194e3d9bc5aaf7c5425ae077d05fb1667d",
-    "README.MD": "6be8e9bc6d51eb04217281218966d207b67f204fba1473225f6dd984c7756422"
+    "README.MD": "7d0d4c1e4e6dbe4eac7e3a7a6aad3a1d98a9ba305742b50c5faf0db7e7965a82"
   },
   "defs": {
     "S_LOGIN": 10,

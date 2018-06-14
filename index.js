@@ -1,71 +1,74 @@
 const Command = require('command');
-
+const config = require('./config.js');
+    
 module.exports = function AutoHeal(dispatch) {
     const command = Command(dispatch);
     
-    const Skills = {
-        6: [ // Priest
-            19, // Focus Heal
-            37  // Immersion
-        ],
-        7: [ // Mystic
-            5, // Titanic Favor
-            9  // Arun's Cleansing Touch
-        ]
-    };
-    
-    const MaxDistance = 35; // in-game meters. can work up to 35m
-    const MaxVertical = 28; // (Ignore targets at top of CS ladders, etc). Can also be 35m
-    
-    let autoHeal = true,
-        autoCleanse = true,
-        hpCutoff = 97,   // (healing only) ignore members that have more HP% than this
-        enabled = false, // gets enabled if you log in as a healer
+    let enabled = false, // gets enabled when you log in as a healer
+        debug = false,
         playerId = 0,
         gameId = 0,
         playerLocation = {},
         partyMembers = [],
         job = -1,
         glyphs = null;
-        
+    
     command.add('autoheal', (p1)=> {
         if (p1 == null) {
-            autoHeal = !autoHeal;
+            config.autoHeal = !config.autoHeal;
         } else if (p1.toLowerCase() === 'off') {
-            autoHeal = false;
+            config.autoHeal = false;
         } else if (p1.toLowerCase() === 'on') {
-            autoHeal = true;
+            config.autoHeal = true;
+        } else if (p1.toLowerCase() === 'debug') {
+            debug = !debug;
+            command.message('(auto-heal) Debug ' + (debug ? 'enabled' : 'disabled'));
+            return;
         } else if (!isNaN(p1)) {
-            autoHeal = true;
-            hpCutoff = (p1 < 0 ? 0 : p1 > 100 ? 100 : p1);
+            config.autoHeal = true;
+            config.hpCutoff = (p1 < 0 ? 0 : p1 > 100 ? 100 : p1);
         } else {
             command.message('(auto-heal) ' + p1 +' is an invalid argument');
             return;
         }        
-        command.message('(auto-heal) Healing ' + (autoHeal ? 'enabled (' + hpCutoff + '%)' : 'disabled'));
+        command.message('(auto-heal) Healing ' + (config.autoHeal ? 'enabled (' + config.hpCutoff + '%)' : 'disabled'));
     });
     
     command.add('autocleanse', (p1) => {
         if (p1 == null) {
-            autoCleanse = !autoCleanse;
+            config.autoCleanse = !config.autoCleanse;
         } else if (p1.toLowerCase() === 'off') {
-            autoCleanse = false;
+            config.autoCleanse = false;
         } else if (p1.toLowerCase() === 'on') {
-            autoCleanse = true;
+            config.autoCleanse = true;
         } else {
             command.message('(auto-heal) ' + p1 +' is an invalid argument for cleanse command');
             return;
         }
-        command.message('(auto-heal) Cleansing ' + (autoCleanse ? 'enabled' : 'disabled'));
+        command.message('(auto-heal) Cleansing ' + (config.autoCleanse ? 'enabled' : 'disabled'));
+    });
+    
+    command.add('autocast', (p1)=> {
+        if (p1 == null) {
+            config.autoCast = !config.autoCast;
+        } else if (p1.toLowerCase() === 'off') {
+            config.autoCast = false;
+        } else if (p1.toLowerCase() === 'on') {
+            config.autoCast = true;
+        } else {
+            command.message('(auto-heal) ' + p1 +' is an invalid argument for cast command');
+            return;
+        }        
+        command.message('(auto-heal) Casting ' + (config.autoCast ? 'enabled' : 'disabled'));
     });
     
     dispatch.hook('S_LOGIN', 10, (event) => {
         playerId = event.playerId;
         gameId = event.gameId;
         job = (event.templateId - 10101) % 100;
-        enabled = (Skills[job]) ? true : false;
+        enabled = (config.Skills[job]) ? true : false;
     })
-    
+       
     dispatch.hook('S_PARTY_MEMBER_LIST', 6, (event) => {
         if (!enabled) return;
         // refresh locations of existing party members.
@@ -208,7 +211,7 @@ module.exports = function AutoHeal(dispatch) {
                 return;
             }
         }
-    });
+    });    
     
     dispatch.hook('C_START_SKILL', 5, (event) => {
         if (!enabled) return;
@@ -219,10 +222,10 @@ module.exports = function AutoHeal(dispatch) {
         }
         let skill = Math.floor((event.skill - 0x4000000) / 10000);
         
-        if(Skills[job] && Skills[job].includes(skill)) {
-            if(skill != 9 && !autoHeal) return; // skip heal if disabled
-            if(skill == 9 && !autoCleanse) return; // skip cleanse if disabled
-            if(skill == 9 && partyMembers.length > 4) return; // skip cleanse if in a raid
+        if(config.Skills[job] && config.Skills[job].includes(skill)) {
+            if (skill != 9 && !config.autoHeal) return; // skip heal if disabled
+            if (skill == 9 && !config.autoCleanse) return; // skip cleanse if disabled
+            if (skill == 9 && partyMembers.length > 4) return; // skip cleanse if in a raid
             
             let targetMembers = [];
             let maxTargetCount = getMaxTargets(skill);
@@ -231,10 +234,10 @@ module.exports = function AutoHeal(dispatch) {
                 if (partyMembers[i].online &&
                     partyMembers[i].hpP != undefined &&
                     partyMembers[i].hpP != 0 &&
-                    ((skill == 9) ? true : partyMembers[i].hpP <= hpCutoff) && // (cleanse) ignore max hp
+                    ((skill == 9) ? true : partyMembers[i].hpP <= config.hpCutoff) && // (cleanse) ignore max hp
                     partyMembers[i].loc != undefined &&
-                    (partyMembers[i].loc.dist3D(playerLocation.loc) / 25) <= MaxDistance && 
-                    (Math.abs(partyMembers[i].loc.z - playerLocation.loc.z) / 25) <= MaxVertical)
+                    (partyMembers[i].loc.dist3D(playerLocation.loc) / 25) <= config.maxDistance && 
+                    (Math.abs(partyMembers[i].loc.z - playerLocation.loc.z) / 25) <= config.maxVertical)
                     {
                         targetMembers.push(partyMembers[i]);
                         if (targetMembers.length == maxTargetCount) break;
@@ -242,20 +245,23 @@ module.exports = function AutoHeal(dispatch) {
             }
             
             if (targetMembers.length > 0) {
+                if (debug) outputDebug(skill);
                 for (let i = 0; i < targetMembers.length; i++) {
                     setTimeout(() => {
                         dispatch.toServer('C_CAN_LOCKON_TARGET', 1, {target: targetMembers[i].gameId, skill: event.skill});
                     }, 5);
                 }
                 
-                setTimeout(() => {
-                    dispatch.toServer('C_START_SKILL', 5, Object.assign({}, event, {w: playerLocation.w, skill: (event.skill + 10)}));
-                }, 10);
+                if (config.autoCast) {
+                    setTimeout(() => {
+                        dispatch.toServer('C_START_SKILL', 5, Object.assign({}, event, {w: playerLocation.w, skill: (event.skill + 10)}));
+                    }, 10);
+                }
             }
         }
         
     })
-    
+
     dispatch.hook('S_CREST_INFO', 2, (event) => {
         if (!enabled) return;
         glyphs = event.crests;
@@ -295,5 +301,19 @@ module.exports = function AutoHeal(dispatch) {
             return parseFloat(a.hpP) - parseFloat(b.hpP);
         });
     }
-    
+        
+    function outputDebug(skill) {
+        let out = '\nAutoheal Debug... Skill: ' + skill + '\tpartyMemebers.length: ' + partyMembers.length;
+        for (let i = 0; i < partyMembers.length; i++) {
+            out += '\n' + i + '\t';
+            let name = partyMembers[i].name;
+            name += ' '.repeat(21-name.length);
+            let hp = '\tHP: ' + partyMembers[i].hpP.toFixed(2);
+            let dist = '\tDist: ' + (partyMembers[i].loc.dist3D(playerLocation.loc) / 25).toFixed(2);
+            let vert = '\tVert: ' + (Math.abs(partyMembers[i].loc.z - playerLocation.loc.z) / 25).toFixed(2);
+            let online = '\tOnline: ' + partyMembers[i].online;
+            out += name + hp + dist + vert + online;
+        }
+        console.log(out)
+    }
 }
