@@ -1,6 +1,6 @@
 {
   "files": {
-    "config.json": {
+    "config.js": {
         "overwrite": false,
         "hash": "2fca7244ab4ae074bd8402283528915879eaf143239505e9de98e32ac680e6f5"
     },
