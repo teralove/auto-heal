@@ -39,6 +39,8 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 ## Changelog
 <details>
 
+    1.61
+    - Fix: Misspelled config.js in manifest
     1.60
     - New: autocast command and feature
     - New: Configs stored in separate file
