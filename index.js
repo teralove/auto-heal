@@ -150,7 +150,7 @@ module.exports = function AutoHeal(dispatch) {
         }
     })
     
-    dispatch.hook('S_PARTY_MEMBER_CHANGE_HP', 3, (event) => {
+    dispatch.hook('S_PARTY_MEMBER_CHANGE_HP', 4, (event) => {
         if (!enabled) return;
         if (playerId == event.playerId) return;
         for (let i = 0; i < partyMembers.length; i++) {
