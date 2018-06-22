@@ -2,11 +2,11 @@
   "files": {
     "config.js": {
         "overwrite": false,
-        "hash": "2fca7244ab4ae074bd8402283528915879eaf143239505e9de98e32ac680e6f5"
+        "hash": "952ccc9af215827f2c1dc07545641d56ae27586cad5672887bafc28641f6bd65"
     },
-    "index.js": "33186b416b5fe63cabd25ed92092c4d9fa351bd19a4a90c6564c3254bee37532",
+    "index.js": "e4a079f4c22e112118abbfdf26a30f1ca368eb10f783d0b99409e4588cf38c70",
     "module.json": "b2dd6257290c3587ab1a8429cc5628194e3d9bc5aaf7c5425ae077d05fb1667d",
-    "README.MD": "4dad999c8cd39bb005ae20317d79b6c683a637310d6cefd09b691bc221114a2e"
+    "README.MD": "71dd0904697f171e127f0ab917adde04db72af30f865048d16dc017bfe0c1beb"
   },
   "defs": {
     "S_LOGIN": 10,

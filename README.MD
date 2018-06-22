@@ -39,6 +39,8 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 ## Changelog
 <details>
 
+    1.62
+    - Updated S_PARTY_MEMBER_CHANGE_HP hook version to 4
     1.61
     - Fix: Misspelled config.js in manifest
     1.60
