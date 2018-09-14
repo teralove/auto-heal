@@ -1,4 +1,5 @@
 {
+    "disableAutoUpdate": false,
     "servers": ["https://raw.githubusercontent.com/LeXFReeMan/auto-heal/master/"],
     "supportUrl": "https://github.com/LeXFReeMan/auto-heal/issues"
 }
