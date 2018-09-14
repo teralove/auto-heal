@@ -22,16 +22,16 @@ module.exports = function AutoHeal(dispatch) {
             config.autoHeal = true;
         } else if (p1.toLowerCase() === 'debug') {
             debug = !debug;
-            command.message('(auto-heal) Debug ' + (debug ? 'enabled' : 'disabled'));
+            command.message('Debug ' + (debug ? 'enabled' : 'disabled'));
             return;
         } else if (!isNaN(p1)) {
             config.autoHeal = true;
             config.hpCutoff = (p1 < 0 ? 0 : p1 > 100 ? 100 : p1);
         } else {
-            command.message('(auto-heal) ' + p1 +' is an invalid argument');
+            command.message(p1 +' is an invalid argument');
             return;
         }        
-        command.message('(auto-heal) Healing ' + (config.autoHeal ? 'enabled (' + config.hpCutoff + '%)' : 'disabled'));
+        command.message('Healing ' + (config.autoHeal ? 'enabled (' + config.hpCutoff + '%)' : 'disabled'));
     });
     
     command.add('autocleanse', (p1) => {
@@ -42,10 +42,10 @@ module.exports = function AutoHeal(dispatch) {
         } else if (p1.toLowerCase() === 'on') {
             config.autoCleanse = true;
         } else {
-            command.message('(auto-heal) ' + p1 +' is an invalid argument for cleanse command');
+            command.message(p1 +' is an invalid argument for cleanse command');
             return;
         }
-        command.message('(auto-heal) Cleansing ' + (config.autoCleanse ? 'enabled' : 'disabled'));
+        command.message('Cleansing ' + (config.autoCleanse ? 'enabled' : 'disabled'));
     });
     
     command.add('autocast', (p1)=> {
@@ -56,10 +56,10 @@ module.exports = function AutoHeal(dispatch) {
         } else if (p1.toLowerCase() === 'on') {
             config.autoCast = true;
         } else {
-            command.message('(auto-heal) ' + p1 +' is an invalid argument for cast command');
+            command.message(p1 +' is an invalid argument for cast command');
             return;
         }        
-        command.message('(auto-heal) Casting ' + (config.autoCast ? 'enabled' : 'disabled'));
+        command.message('Casting ' + (config.autoCast ? 'enabled' : 'disabled'));
     });
     
     dispatch.hook('S_LOGIN', 10, (event) => {
@@ -69,7 +69,7 @@ module.exports = function AutoHeal(dispatch) {
         enabled = (config.Skills[job]) ? true : false;
     })
        
-    dispatch.hook('S_PARTY_MEMBER_LIST', 6, (event) => {
+    dispatch.hook('S_PARTY_MEMBER_LIST', 7, (event) => {
         if (!enabled) return;
         // refresh locations of existing party members.
         for (let i = 0; i < event.members.length; i++) {
@@ -96,12 +96,12 @@ module.exports = function AutoHeal(dispatch) {
         partyMembers = [];
     })
     
-    dispatch.hook('C_PLAYER_LOCATION', 3, (event) => {
+    dispatch.hook('C_PLAYER_LOCATION', 5, (event) => {
         if (!enabled) return;
         playerLocation = event;
     })
     
-    dispatch.hook('S_SPAWN_ME', 2, (event) => {
+    dispatch.hook('S_SPAWN_ME', 3, (event) => {
         playerLocation.gameId = event.gameId;
         playerLocation.loc = event.loc;
         playerLocation.w = event.w;
@@ -120,7 +120,7 @@ module.exports = function AutoHeal(dispatch) {
         }
     })
     
-    dispatch.hook('S_USER_LOCATION', 3, (event) => {
+    dispatch.hook('S_USER_LOCATION', 5, (event) => {
         if (!enabled) return;
         for (let i = 0; i < partyMembers.length; i++) {
             if (partyMembers[i].gameId.equals(event.gameId)) {
@@ -213,14 +213,14 @@ module.exports = function AutoHeal(dispatch) {
         }
     });    
     
-    dispatch.hook('C_START_SKILL', 5, (event) => {
+    dispatch.hook('C_START_SKILL', 7, (event) => {
         if (!enabled) return;
         if (partyMembers.length == 0) return; // be in a party
-        if ((event.skill - 0x4000000) / 10 & 1 != 0) { // is casting (opposed to locking on)
+        if (event.skill.id / 10 & 1 != 0) { // is casting (opposed to locking on)
             playerLocation.w = event.w;
             return; 
         }
-        let skill = Math.floor((event.skill - 0x4000000) / 10000);
+        let skill = Math.floor(event.skill.id / 10000);
         
         if(config.Skills[job] && config.Skills[job].includes(skill)) {
             if (skill != 9 && !config.autoHeal) return; // skip heal if disabled
@@ -245,16 +245,16 @@ module.exports = function AutoHeal(dispatch) {
             }
             
             if (targetMembers.length > 0) {
-                if (debug) outputDebug(skill);
+                if (debug) outputDebug(event.skill);
                 for (let i = 0; i < targetMembers.length; i++) {
                     setTimeout(() => {
-                        dispatch.toServer('C_CAN_LOCKON_TARGET', 1, {target: targetMembers[i].gameId, skill: event.skill});
+                        dispatch.toServer('C_CAN_LOCKON_TARGET', 3, {target: targetMembers[i].gameId, skill: event.skill.id});
                     }, 5);
                 }
                 
                 if (config.autoCast) {
                     setTimeout(() => {
-                        dispatch.toServer('C_START_SKILL', 5, Object.assign({}, event, {w: playerLocation.w, skill: (event.skill + 10)}));
+                        dispatch.toServer('C_START_SKILL', 7, Object.assign({}, event, {w: playerLocation.w, skill: (event.skill.id + 10)}));
                     }, 10);
                 }
             }
@@ -303,7 +303,7 @@ module.exports = function AutoHeal(dispatch) {
     }
         
     function outputDebug(skill) {
-        let out = '\nAutoheal Debug... Skill: ' + skill + '\tpartyMemebers.length: ' + partyMembers.length;
+        let out = '\nAutoheal Debug... Skill: ' + skill.id + '\tpartyMemebers.length: ' + partyMembers.length;
         for (let i = 0; i < partyMembers.length; i++) {
             out += '\n' + i + '\t';
             let name = partyMembers[i].name;

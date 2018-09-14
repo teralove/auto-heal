@@ -39,6 +39,9 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 ## Changelog
 <details>
 
+    1.63
+    - Update for patch version 74.03
+    - Removed redundant text in command messages 
     1.62
     - Updated S_PARTY_MEMBER_CHANGE_HP hook version to 4
     1.61
@@ -58,7 +61,6 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
     - New: autoheal command has argument to toggle on/off explicitly ('autoheal on/off')
     - New: autocleanse command has argument to toggle on/off explicitly ('autocleanse on/off')
     - New: Vertical distance check.
-    - ~~Fixed: Sometimes still locking onto dead players.~~
     - Fixed: Locking onto players that left the party.
     - Fixed: Mod would only start working on players when they had moved.
     - Fixed: Mod would briefly stop working when a dead party member resses.
