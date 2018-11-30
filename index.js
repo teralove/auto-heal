@@ -155,7 +155,7 @@ module.exports = function AutoHeal(dispatch) {
         if (playerId == event.playerId) return;
         for (let i = 0; i < partyMembers.length; i++) {
             if (partyMembers[i].playerId === event.playerId) {
-                partyMembers[i].hpP = (event.currentHp / event.maxHp) * 100;
+                partyMembers[i].hpP = (parseInt(event.currentHp) / parseInt(event.maxHp)) * 100;
                 return;
             }
         }
@@ -166,7 +166,7 @@ module.exports = function AutoHeal(dispatch) {
         if (playerId == event.playerId) return;
         for (let i = 0; i < partyMembers.length; i++) {
             if (partyMembers[i].playerId === event.playerId) {
-                partyMembers[i].hpP = (event.curHp / event.maxHp) * 100;
+                partyMembers[i].hpP = (parseInt(event.curHp) / parseInt(event.maxHp)) * 100;
                 return;
             }
         }
@@ -308,7 +308,7 @@ module.exports = function AutoHeal(dispatch) {
             out += '\n' + i + '\t';
             let name = partyMembers[i].name;
             name += ' '.repeat(21-name.length);
-            let hp = '\tHP: ' + partyMembers[i].hpP.toFixed(2);
+            let hp = '\tHP: ' + parseFloat(partyMembers[i].hpP).toFixed(2);
             let dist = '\tDist: ' + (partyMembers[i].loc.dist3D(playerLocation.loc) / 25).toFixed(2);
             let vert = '\tVert: ' + (Math.abs(partyMembers[i].loc.z - playerLocation.loc.z) / 25).toFixed(2);
             let online = '\tOnline: ' + partyMembers[i].online;
