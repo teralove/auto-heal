@@ -1,8 +1,5 @@
-const Command = require('command');
-const config = require('./config.js');
-    
-module.exports = function AutoHeal(dispatch) {
-    const command = Command(dispatch);
+module.exports = function AutoHeal(mod) {
+    const config = require('./config.js');
     
     let enabled = false, // gets enabled when you log in as a healer
         debug = false,
@@ -13,69 +10,72 @@ module.exports = function AutoHeal(dispatch) {
         job = -1,
         glyphs = null;
     
-    command.add('autoheal', (p1)=> {
+    mod.command.add('autoheal', (p1)=> {
+        if (p1) p1 = p1.toLowerCase();
         if (p1 == null) {
             config.autoHeal = !config.autoHeal;
-        } else if (p1.toLowerCase() === 'off') {
+        } else if (p1 === 'off') {
             config.autoHeal = false;
-        } else if (p1.toLowerCase() === 'on') {
+        } else if (p1 === 'on') {
             config.autoHeal = true;
-        } else if (p1.toLowerCase() === 'debug') {
+        } else if (p1 === 'debug') {
             debug = !debug;
-            command.message('Debug ' + (debug ? 'enabled' : 'disabled'));
+            mod.command.message('Debug ' + (debug ? 'enabled' : 'disabled'));
             return;
         } else if (!isNaN(p1)) {
             config.autoHeal = true;
             config.hpCutoff = (p1 < 0 ? 0 : p1 > 100 ? 100 : p1);
         } else {
-            command.message(p1 +' is an invalid argument');
+            mod.command.message(p1 +' is an invalid argument');
             return;
         }        
-        command.message('Healing ' + (config.autoHeal ? 'enabled (' + config.hpCutoff + '%)' : 'disabled'));
+        mod.command.message('Healing ' + (config.autoHeal ? 'enabled (' + config.hpCutoff + '%)' : 'disabled'));
     });
     
-    command.add('autocleanse', (p1) => {
+    mod.command.add('autocleanse', (p1) => {
+        if (p1) p1 = p1.toLowerCase();
         if (p1 == null) {
             config.autoCleanse = !config.autoCleanse;
-        } else if (p1.toLowerCase() === 'off') {
+        } else if (p1 === 'off') {
             config.autoCleanse = false;
-        } else if (p1.toLowerCase() === 'on') {
+        } else if (p1 === 'on') {
             config.autoCleanse = true;
         } else {
-            command.message(p1 +' is an invalid argument for cleanse command');
+            mod.command.message(p1 +' is an invalid argument for cleanse command');
             return;
         }
-        command.message('Cleansing ' + (config.autoCleanse ? 'enabled' : 'disabled'));
+        mod.command.message('Cleansing ' + (config.autoCleanse ? 'enabled' : 'disabled'));
     });
     
-    command.add('autocast', (p1)=> {
+    mod.command.add('autocast', (p1)=> {
+        if (p1) p1 = p1.toLowerCase();
         if (p1 == null) {
             config.autoCast = !config.autoCast;
-        } else if (p1.toLowerCase() === 'off') {
+        } else if (p1 === 'off') {
             config.autoCast = false;
-        } else if (p1.toLowerCase() === 'on') {
+        } else if (p1 === 'on') {
             config.autoCast = true;
         } else {
-            command.message(p1 +' is an invalid argument for cast command');
+            mod.command.message(p1 +' is an invalid argument for cast command');
             return;
         }        
-        command.message('Casting ' + (config.autoCast ? 'enabled' : 'disabled'));
+        mod.command.message('Casting ' + (config.autoCast ? 'enabled' : 'disabled'));
     });
     
-    dispatch.hook('S_LOGIN', 10, (event) => {
+    mod.hook('S_LOGIN', 10, (event) => {
         playerId = event.playerId;
         gameId = event.gameId;
         job = (event.templateId - 10101) % 100;
         enabled = (config.Skills[job]) ? true : false;
     })
        
-    dispatch.hook('S_PARTY_MEMBER_LIST', 7, (event) => {
+    mod.hook('S_PARTY_MEMBER_LIST', 7, (event) => {
         if (!enabled) return;
         // refresh locations of existing party members.
         for (let i = 0; i < event.members.length; i++) {
             for (let j = 0; j < partyMembers.length; j++) {
                 if (partyMembers[j]) {
-                    if (event.members[i].gameId.equals(partyMembers[j].gameId)) {
+                    if (event.members[i].gameId === (partyMembers[j].gameId)) {
                         event.members[i].loc = partyMembers[j].loc;
                         event.members[i].hpP = partyMembers[j].hpP;
                     }
@@ -85,33 +85,33 @@ module.exports = function AutoHeal(dispatch) {
         partyMembers = event.members;
         // remove self from targets
         for (let i = 0; i < partyMembers.length; i++) {
-            if (partyMembers[i].gameId.equals(gameId)) {
+            if (partyMembers[i].gameId === (gameId)) {
                 partyMembers.splice(i, 1);
                 return;
             }
         }
     })
     
-    dispatch.hook('S_LEAVE_PARTY', 1, (event) => {
+    mod.hook('S_LEAVE_PARTY', 1, (event) => {
         partyMembers = [];
     })
     
-    dispatch.hook('C_PLAYER_LOCATION', 5, (event) => {
+    mod.hook('C_PLAYER_LOCATION', 5, (event) => {
         if (!enabled) return;
         playerLocation = event;
     })
     
-    dispatch.hook('S_SPAWN_ME', 3, (event) => {
+    mod.hook('S_SPAWN_ME', 3, (event) => {
         playerLocation.gameId = event.gameId;
         playerLocation.loc = event.loc;
         playerLocation.w = event.w;
     })
     
-    dispatch.hook('S_SPAWN_USER', 13, (event) => {
+    mod.hook('S_SPAWN_USER', 13, (event) => {
         if (!enabled) return;
         if (partyMembers.length != 0) {
             for (let i = 0; i < partyMembers.length; i++) {
-                if (partyMembers[i].gameId.equals(event.gameId)) {
+                if (partyMembers[i].gameId === (event.gameId)) {
                     partyMembers[i].loc = event.loc;
                     partyMembers[i].hpP = (event.alive ? 100 : 0);
                     return;
@@ -120,62 +120,62 @@ module.exports = function AutoHeal(dispatch) {
         }
     })
     
-    dispatch.hook('S_USER_LOCATION', 5, (event) => {
+    mod.hook('S_USER_LOCATION', 5, (event) => {
         if (!enabled) return;
         for (let i = 0; i < partyMembers.length; i++) {
-            if (partyMembers[i].gameId.equals(event.gameId)) {
+            if (partyMembers[i].gameId === (event.gameId)) {
                 partyMembers[i].loc = event.loc;
                 return;
             }
         }
     })
     
-    dispatch.hook('S_USER_LOCATION_IN_ACTION', 2, (event) => {
+    mod.hook('S_USER_LOCATION_IN_ACTION', 2, (event) => {
         if (!enabled) return;
         for (let i = 0; i < partyMembers.length; i++) {
-            if (partyMembers[i].gameId.equals(event.gameId)) {
+            if (partyMembers[i].gameId === (event.gameId)) {
                 partyMembers[i].loc = event.loc;
                 return;
             }
         }
     })
     
-    dispatch.hook('S_INSTANT_DASH', 3, (event) => {
+    mod.hook('S_INSTANT_DASH', 3, (event) => {
         if (!enabled) return;
         for (let i = 0; i < partyMembers.length; i++) {
-            if (partyMembers[i].gameId.equals(event.gameId)) {
+            if (partyMembers[i].gameId === (event.gameId)) {
                 partyMembers[i].loc = event.loc;
                 return;
             }
         }
     })
     
-    dispatch.hook('S_PARTY_MEMBER_CHANGE_HP', 4, (event) => {
+    mod.hook('S_PARTY_MEMBER_CHANGE_HP', 4, (event) => {
         if (!enabled) return;
         if (playerId == event.playerId) return;
         for (let i = 0; i < partyMembers.length; i++) {
             if (partyMembers[i].playerId === event.playerId) {
-                partyMembers[i].hpP = (parseInt(event.currentHp) / parseInt(event.maxHp)) * 100;
+                partyMembers[i].hpP = (Number(event.currentHp) / Number(event.maxHp)) * 100;
                 return;
             }
         }
     })
     
-    dispatch.hook('S_PARTY_MEMBER_STAT_UPDATE', 3, (event) => {
+    mod.hook('S_PARTY_MEMBER_STAT_UPDATE', 3, (event) => {
         if (!enabled) return;
         if (playerId == event.playerId) return;
         for (let i = 0; i < partyMembers.length; i++) {
             if (partyMembers[i].playerId === event.playerId) {
-                partyMembers[i].hpP = (parseInt(event.curHp) / parseInt(event.maxHp)) * 100;
+                partyMembers[i].hpP = (Number(event.curHp) / Number(event.maxHp)) * 100;
                 return;
             }
         }
     })
     
-    dispatch.hook('S_DEAD_LOCATION', 2, (event) => {
+    mod.hook('S_DEAD_LOCATION', 2, (event) => {
         if (!enabled) return;
         for (let i = 0; i < partyMembers.length; i++) {
-            if (partyMembers[i].gameId.equals(event.gameId)) {
+            if (partyMembers[i].gameId === (event.gameId)) {
                 partyMembers[i].loc = event.loc;
                 partyMembers[i].hpP = 0;
                 return;
@@ -183,7 +183,7 @@ module.exports = function AutoHeal(dispatch) {
         }
     })
     
-    dispatch.hook('S_LEAVE_PARTY_MEMBER', 2, (event) => {
+    mod.hook('S_LEAVE_PARTY_MEMBER', 2, (event) => {
         if (!enabled) return;
         for (let i = 0; i < partyMembers.length; i++) {
             if (partyMembers[i].playerId === event.playerId) {
@@ -193,7 +193,7 @@ module.exports = function AutoHeal(dispatch) {
         }
     });
      
-    dispatch.hook('S_LOGOUT_PARTY_MEMBER', 1, (event) => {
+    mod.hook('S_LOGOUT_PARTY_MEMBER', 1, (event) => {
         if (!enabled) return;
         for (let i = 0; i < partyMembers.length; i++) {
             if (partyMembers[i].playerId === event.playerId) {
@@ -203,7 +203,7 @@ module.exports = function AutoHeal(dispatch) {
         }
     });
     
-    dispatch.hook('S_BAN_PARTY_MEMBER', 1, (event) => {
+    mod.hook('S_BAN_PARTY_MEMBER', 1, (event) => {
         if (!enabled) return;
         for (let i = 0; i < partyMembers.length; i++) {
             if (partyMembers[i].playerId === event.playerId) {
@@ -213,7 +213,7 @@ module.exports = function AutoHeal(dispatch) {
         }
     });    
     
-    dispatch.hook('C_START_SKILL', 7, (event) => {
+    mod.hook('C_START_SKILL', 7, (event) => {
         if (!enabled) return;
         if (partyMembers.length == 0) return; // be in a party
         if (event.skill.id / 10 & 1 != 0) { // is casting (opposed to locking on)
@@ -248,13 +248,13 @@ module.exports = function AutoHeal(dispatch) {
                 if (debug) outputDebug(event.skill);
                 for (let i = 0; i < targetMembers.length; i++) {
                     setTimeout(() => {
-                        dispatch.toServer('C_CAN_LOCKON_TARGET', 3, {target: targetMembers[i].gameId, skill: event.skill.id});
+                        mod.toServer('C_CAN_LOCKON_TARGET', 3, {target: targetMembers[i].gameId, skill: event.skill.id});
                     }, 5);
                 }
                 
                 if (config.autoCast) {
                     setTimeout(() => {
-                        dispatch.toServer('C_START_SKILL', 7, Object.assign({}, event, {w: playerLocation.w, skill: (event.skill.id + 10)}));
+                        mod.toServer('C_START_SKILL', 7, Object.assign({}, event, {w: playerLocation.w, skill: (event.skill.id + 10)}));
                     }, 10);
                 }
             }
@@ -262,12 +262,12 @@ module.exports = function AutoHeal(dispatch) {
         
     })
 
-    dispatch.hook('S_CREST_INFO', 2, (event) => {
+    mod.hook('S_CREST_INFO', 2, (event) => {
         if (!enabled) return;
         glyphs = event.crests;
     })
     
-    dispatch.hook('S_CREST_APPLY', 2, (event) => {
+    mod.hook('S_CREST_APPLY', 2, (event) => {
         if (!enabled) return;
         for (let i = 0; i < glyphs.length; i++) {
             if (glyphs[i].id == event.id) {
