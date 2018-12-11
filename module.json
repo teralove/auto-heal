@@ -1,5 +1,11 @@
 {
     "disableAutoUpdate": false,
+	"name": "auto-heal",
+	"author": "teralove",
+	"description": "Skip lockons and instantly heals/cleanses party members.",
+	"options": {
+		"niceName": "Auto-Heal"
+	},
     "servers": ["https://raw.githubusercontent.com/teralove/auto-heal/master/"],
     "supportUrl": "https://github.com/teralove/auto-heal/issues"
 }

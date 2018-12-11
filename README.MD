@@ -1,5 +1,5 @@
 # auto-heal
-tera-proxy module that skips lockons and instantly heals and cleanses party members.
+Skip lockons and instantly heals/cleanses party members.
 
 ## Info
 - Skills will instantly lockon and heal/cleanse party members. Heals prioritize the lowest HP.
@@ -39,6 +39,10 @@ tera-proxy module that skips lockons and instantly heals and cleanses party memb
 ## Changelog
 <details>
 
+    1.65
+    - Next Gen update
+    1.64
+    - BigInt fix
     1.63
     - Update for patch version 74.03
     - Removed redundant text in command messages 
