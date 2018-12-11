@@ -4,9 +4,7 @@
         "overwrite": false,
         "hash": "952ccc9af215827f2c1dc07545641d56ae27586cad5672887bafc28641f6bd65"
     },
-    "index.js": "5fa74c114fce9d714c851d23550a89fecec95d53d1098ea68f6ca6d2bf466806",
-    "module.json": "9cf355f9f570f13f32d5d8b11ee97d4e96ab942dd8bb15040391535ffcf47629",
-    "README.MD": "28da4201eb2b175098e43781beb1345340142abb9ed572008f4490ac9ddf3653"
+    "index.js": "5fa74c114fce9d714c851d23550a89fecec95d53d1098ea68f6ca6d2bf466806"
   },
   "defs": {
     "C_CAN_LOCKON_TARGET": 3,
