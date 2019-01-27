@@ -1,10 +1,12 @@
 {
   "files": {
-    "config.js": {
+    "config.json": {
         "overwrite": false,
-        "hash": "952ccc9af215827f2c1dc07545641d56ae27586cad5672887bafc28641f6bd65"
+        "hash": "463d9e4fe4c7c80a73f86318175b5d88111737b78c54146063bf8f7c7631f544"
     },
-    "index.js": "5fa74c114fce9d714c851d23550a89fecec95d53d1098ea68f6ca6d2bf466806"
+    "index.js": "5feadc9c5fce81e5ff558e9103843c95708dc5d0de9d4b13a23791a90df99fb3",
+    "module.json": "34404a8a0baf604abcf24e46df938802097385a5177dafb04c165585c5920c58",
+    "settings_migrator.js": "b0e512fd38e47d4153993a485b4068c8a915a16cc4f9be89285280c73d0f0c7b"
   },
   "defs": {
     "C_CAN_LOCKON_TARGET": 3,
