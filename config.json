@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "data": {
+        "skills": {
+            "6": [
+                19,
+                37
+            ],
+            "7": [
+                5,
+                9
+            ]
+        },
+        "autoCast": true,
+        "autoHeal": true,
+        "autoCleanse": true,
+        "hpCutoff": 97,
+        "maxDistance": 35,
+        "lockSpeed": 5,
+        "castSpeed": 10
+    }
+}
