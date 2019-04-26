@@ -62,7 +62,7 @@ module.exports = function AutoHeal(mod) {
     });
     
     mod.game.on('enter_game', () => { 
-        job = (event.templateId - 10101) % 100;
+        job = (mod.game.me.templateId - 10101) % 100;
         (mod.settings.skills[job]) ? load() : unload();
     })
        
