@@ -61,7 +61,7 @@ module.exports = function AutoHeal(mod) {
         mod.command.message('Casting ' + (mod.settings.autoCast ? 'enabled' : 'disabled'));
     });
     
-    mod.hook('S_LOGIN', 10, (event) => {
+    mod.game.on('enter_game', () => { 
         job = (event.templateId - 10101) % 100;
         (mod.settings.skills[job]) ? load() : unload();
     })
