@@ -110,7 +110,7 @@ module.exports = function AutoHeal(mod) {
                 playerLocation.w = event.w;
             })
             
-            hook('S_SPAWN_USER', 13, (event) => {
+            hook('S_SPAWN_USER', 15, (event) => {
                 if (partyMembers.length != 0) {
                     let member = partyMembers.find(m => m.gameId == event.gameId);
                     if (member) {
@@ -264,10 +264,12 @@ module.exports = function AutoHeal(mod) {
             let name = partyMembers[i].name;
             name += ' '.repeat(21-name.length);
             let hp = '\tHP: ' + parseFloat(partyMembers[i].hpP).toFixed(2);
-            let dist = '\tDist: ' + (partyMembers[i].loc.dist3D(playerLocation.loc) / 25).toFixed(2);
+            let dist = 'undefined';
+            if (partyMembers[i].loc) dist = '\tDist: ' + (partyMembers[i].loc.dist3D(playerLocation.loc) / 25).toFixed(2);
             let vert = '\tVert: ' + (Math.abs(partyMembers[i].loc.z - playerLocation.loc.z) / 25).toFixed(2);
             let online = '\tOnline: ' + partyMembers[i].online;
-            out += name + hp + dist + vert + online;
+            let alive = '\tAlive: ' + partyMembers[i].alive;
+            out += name + hp + dist + vert + online + alive;
         }
         console.log(out)
     }

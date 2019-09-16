@@ -24,7 +24,7 @@
     "S_PARTY_MEMBER_LIST": 7,
     "S_PARTY_MEMBER_STAT_UPDATE": 3,    
     "S_SPAWN_ME": 3,
-    "S_SPAWN_USER": 13,
+    "S_SPAWN_USER": 15,
     "S_USER_LOCATION": 5,
     "S_USER_LOCATION_IN_ACTION": 2
   }
