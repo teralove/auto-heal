@@ -21,6 +21,9 @@ module.exports = function AutoHeal(mod) {
             debug = !debug;
             mod.command.message('Debug ' + (debug ? 'enabled' : 'disabled'));
             return;
+        } else if (p1 === 'test') {
+			outputDebug(0);
+            return;
         } else if (!isNaN(p1)) {
             mod.settings.autoHeal = true;
             mod.settings.hpCutoff = (p1 < 0 ? 0 : p1 > 100 ? 100 : p1);
@@ -60,7 +63,7 @@ module.exports = function AutoHeal(mod) {
         }        
         mod.command.message('Casting ' + (mod.settings.autoCast ? 'enabled' : 'disabled'));
     });
-    
+        
     mod.game.on('enter_game', () => { 
         job = (mod.game.me.templateId - 10101) % 100;
         (mod.settings.skills[job]) ? load() : unload();
@@ -76,25 +79,24 @@ module.exports = function AutoHeal(mod) {
 				mod.unhook(h);
 			hooks = [];
 		}
-	}    
+	}
     
 	function load() {
 		if (!hooks.length) {
             
-            hook('S_PARTY_MEMBER_LIST', 7, (event) => {
-                // refresh locations of existing party members.
-                for (let i = 0; i < event.members.length; i++) {
-                    for (let j = 0; j < partyMembers.length; j++) {
-                        if (partyMembers[j]) {
-                            if (event.members[i].gameId === (partyMembers[j].gameId)) {
-                                event.members[i].loc = partyMembers[j].loc;
-                                event.members[i].hpP = partyMembers[j].hpP;
-                                event.members[i].alive = partyMembers[j].alive;
-                            }
-                        }
-                    }
-                }
-                partyMembers = event.members.filter(m => !mod.game.me.is(m.gameId)); // remove self from targets     
+            hook('S_PARTY_MEMBER_LIST', 7, (event) => {				
+				const copy = partyMembers;			
+            	partyMembers = event.members.filter(m => m.playerId != mod.game.me.playerId); // remove self from targets
+				
+				// restore missing gameIds. sometimes gameIds are 0 since 64-bit patch
+				if (copy) {
+					for(let i = 0; i < partyMembers.length; i++) {
+						const copyMember = copy.find(m => m.playerId == partyMembers[i].playerId);
+						if (copyMember) {
+							partyMembers[i].gameId = copyMember.gameId;
+						}
+					}
+				}
             })
             
             hook('S_LEAVE_PARTY', 1, (event) => {
@@ -112,8 +114,9 @@ module.exports = function AutoHeal(mod) {
             
             hook('S_SPAWN_USER', 15, (event) => {
                 if (partyMembers.length != 0) {
-                    let member = partyMembers.find(m => m.gameId == event.gameId);
+                    let member = partyMembers.find(m => m.playerId === event.playerId);
                     if (member) {
+						member.gameId = event.gameId;
                         member.loc = event.loc;
                         member.alive = event.alive;
                         member.hpP = (event.alive ? 100 : 0);
@@ -121,7 +124,7 @@ module.exports = function AutoHeal(mod) {
                 }
             })
             
-            hook('S_USER_LOCATION', 5, (event) => {
+            hook('S_USER_LOCATION', 5, (event) => {     
                 let member = partyMembers.find(m => m.gameId === event.gameId);
                 if (member) member.loc = event.loc;
             })
@@ -150,16 +153,16 @@ module.exports = function AutoHeal(mod) {
                 if (member) {
                     member.hpP = (Number(event.curHp) / Number(event.maxHp)) * 100;    
                     member.alive = event.alive;
-                }                    
+                }
             })
             
             hook('S_DEAD_LOCATION', 2, (event) => {
-                let member = partyMembers.find(m => m.playerId === event.playerId);
+                let member = partyMembers.find(m => (m.gameId === event.gameId));
                 if (member) {
                     member.loc = event.loc;
                     member.hpP = 0;
                     member.alive = false;
-                }                
+                }
             })
             
             hook('S_LEAVE_PARTY_MEMBER', 2, (event) => {
@@ -179,7 +182,6 @@ module.exports = function AutoHeal(mod) {
                 if (partyMembers.length == 0) return; // be in a party
                 if (event.skill.id / 10 & 1 != 0) { // is casting (opposed to locking on)
                     playerLocation.w = event.w;
-                    return; 
                 }
                 let skill = Math.floor(event.skill.id / 10000);
                 
@@ -190,6 +192,7 @@ module.exports = function AutoHeal(mod) {
                     
                     let targetMembers = [];
                     let maxTargetCount = getMaxTargets(skill);
+					
                     if (skill != 9) sortHp();
                     for (let i = 0, n = partyMembers.length; i < n; i++) {
                         if (partyMembers[i].online &&
@@ -198,24 +201,24 @@ module.exports = function AutoHeal(mod) {
                             partyMembers[i].hpP != 0 &&
                             ((skill == 9) ? true : partyMembers[i].hpP <= mod.settings.hpCutoff) && // (cleanse) ignore max hp
                             partyMembers[i].loc != undefined &&
-                            (partyMembers[i].loc.dist3D(playerLocation.loc) / 25) <= mod.settings.maxDistance)
-                            {
-                                targetMembers.push(partyMembers[i]);
+                            (partyMembers[i].loc.dist3D(playerLocation.loc) / 25) <= mod.settings.maxDistance) {
+								targetMembers.push(partyMembers[i]);
                                 if (targetMembers.length == maxTargetCount) break;
                             }
                     }
-                    
+
                     if (targetMembers.length > 0) {
                         if (debug) outputDebug(event.skill);
+                        
                         for (let i = 0, n = targetMembers.length; i < n; i++) {
                             setTimeout(() => {
-                                mod.toServer('C_CAN_LOCKON_TARGET', 3, {target: targetMembers[i].gameId, skill: event.skill.id});
+                                mod.send('C_CAN_LOCKON_TARGET', 3, {target: targetMembers[i].gameId, skill: event.skill.id});
                             }, mod.settings.lockSpeed);
                         }
                         
                         if (mod.settings.autoCast) {
                             setTimeout(() => {
-                                mod.toServer('C_START_SKILL', 7, Object.assign({}, event, {w: playerLocation.w, skill: (event.skill.id + 10)}));
+                                mod.send('C_START_SKILL', 7, Object.assign({}, event, {w: playerLocation.w, skill: (event.skill.id + 10)}));
                             }, mod.settings.castSpeed);
                         }
                     }
@@ -231,9 +234,10 @@ module.exports = function AutoHeal(mod) {
                 let glyph = glyphs.find(g => g.id == event.id);
                 if (glyph) glyph.enable = event.enable;                
             })
-            
+			
         }
     }
+
     
     function getMaxTargets (skill) {
         switch(skill) {
@@ -264,12 +268,13 @@ module.exports = function AutoHeal(mod) {
             let name = partyMembers[i].name;
             name += ' '.repeat(21-name.length);
             let hp = '\tHP: ' + parseFloat(partyMembers[i].hpP).toFixed(2);
-            let dist = 'undefined';
+            let dist = '\tundefined';
             if (partyMembers[i].loc) dist = '\tDist: ' + (partyMembers[i].loc.dist3D(playerLocation.loc) / 25).toFixed(2);
-            let vert = '\tVert: ' + (Math.abs(partyMembers[i].loc.z - playerLocation.loc.z) / 25).toFixed(2);
+           // let vert = '\tVert: ' + (Math.abs(partyMembers[i].loc.z - playerLocation.loc.z) / 25).toFixed(2);
             let online = '\tOnline: ' + partyMembers[i].online;
             let alive = '\tAlive: ' + partyMembers[i].alive;
-            out += name + hp + dist + vert + online + alive;
+            let pid = '\tpid: ' + partyMembers[i].playerId + '  gid: ' + partyMembers[i].gameId  ;
+            out += name + hp + dist + online + alive + pid;
         }
         console.log(out)
     }
