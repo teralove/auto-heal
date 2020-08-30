@@ -16,7 +16,7 @@
         "autoCleanse": true,
         "hpCutoff": 97,
         "maxDistance": 35,
-        "lockSpeed": 5,
-        "castSpeed": 10
+        "lockSpeed": 30,
+        "castSpeed": 100
     }
 }

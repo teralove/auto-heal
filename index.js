@@ -22,7 +22,7 @@ module.exports = function AutoHeal(mod) {
             mod.command.message('Debug ' + (debug ? 'enabled' : 'disabled'));
             return;
         } else if (p1 === 'test') {
-			outputDebug(0);
+            outputDebug(0);
             return;
         } else if (!isNaN(p1)) {
             mod.settings.autoHeal = true;
@@ -69,34 +69,35 @@ module.exports = function AutoHeal(mod) {
         (mod.settings.skills[job]) ? load() : unload();
     })
        
-	function hook() {
-		hooks.push(mod.hook(...arguments));
-	}
-	
-	function unload() {
-		if (hooks.length) {
-			for (let h of hooks)
-				mod.unhook(h);
-			hooks = [];
-		}
-	}
+    function hook() {
+        hooks.push(mod.hook(...arguments));
+    }
     
-	function load() {
-		if (!hooks.length) {
+    function unload() {
+        if (hooks.length) {
+            for (let h of hooks)
+                mod.unhook(h);
+            hooks = [];
+        }
+    }
+    
+    function load() {
+        if (!hooks.length) {
             
-            hook('S_PARTY_MEMBER_LIST', 7, (event) => {				
-				const copy = partyMembers;			
-            	partyMembers = event.members.filter(m => m.playerId != mod.game.me.playerId); // remove self from targets
-				
-				// restore missing gameIds. sometimes gameIds are 0 since 64-bit patch
-				if (copy) {
-					for(let i = 0; i < partyMembers.length; i++) {
-						const copyMember = copy.find(m => m.playerId == partyMembers[i].playerId);
-						if (copyMember) {
-							partyMembers[i].gameId = copyMember.gameId;
-						}
-					}
-				}
+            hook('S_PARTY_MEMBER_LIST', 7, (event) => {             
+                const copy = partyMembers;          
+                partyMembers = event.members.filter(m => m.playerId != mod.game.me.playerId); // remove self from targets
+                
+                // restore missing gameIds. sometimes gameIds are 0 since 64-bit patch
+                if (copy) {
+                    for(let i = 0; i < partyMembers.length; i++) {
+                        const copyMember = copy.find(m => m.playerId == partyMembers[i].playerId);
+                        if (copyMember) {
+                            partyMembers[i].gameId = copyMember.gameId;
+                            if (copyMember.loc) partyMembers[i].loc = copyMember.loc;
+                        }
+                    }
+                }
             })
             
             hook('S_LEAVE_PARTY', 1, (event) => {
@@ -116,7 +117,7 @@ module.exports = function AutoHeal(mod) {
                 if (partyMembers.length != 0) {
                     let member = partyMembers.find(m => m.playerId === event.playerId);
                     if (member) {
-						member.gameId = event.gameId;
+                        member.gameId = event.gameId;
                         member.loc = event.loc;
                         member.alive = event.alive;
                         member.hpP = (event.alive ? 100 : 0);
@@ -192,7 +193,7 @@ module.exports = function AutoHeal(mod) {
                     
                     let targetMembers = [];
                     let maxTargetCount = getMaxTargets(skill);
-					
+                    
                     if (skill != 9) sortHp();
                     for (let i = 0, n = partyMembers.length; i < n; i++) {
                         if (partyMembers[i].online &&
@@ -202,7 +203,7 @@ module.exports = function AutoHeal(mod) {
                             ((skill == 9) ? true : partyMembers[i].hpP <= mod.settings.hpCutoff) && // (cleanse) ignore max hp
                             partyMembers[i].loc != undefined &&
                             (partyMembers[i].loc.dist3D(playerLocation.loc) / 25) <= mod.settings.maxDistance) {
-								targetMembers.push(partyMembers[i]);
+                                targetMembers.push(partyMembers[i]);
                                 if (targetMembers.length == maxTargetCount) break;
                             }
                     }
@@ -234,7 +235,7 @@ module.exports = function AutoHeal(mod) {
                 let glyph = glyphs.find(g => g.id == event.id);
                 if (glyph) glyph.enable = event.enable;                
             })
-			
+            
         }
     }
 
