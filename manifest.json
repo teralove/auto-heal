@@ -4,8 +4,8 @@
         "overwrite": false,
         "hash": "69c206298dd7705762e602b1bed66cd9a13aa90e9c6ba6900f486956dd59c8e2"
     },
-    "index.js": "50afce6bef0c40e75f2b2cae06b236151329b9c61d9450bc20324ccbd18c27b2",
-    "module.json": "d21df02f2d9406d01c11514ba88437d801dcfb31ec8911af9f94a5f1b344a3ec",
+    "index.js": "849db56fa40a0e18dc6bf9936949f417cce946b7ed377e86d2d85558da6f7aa2",
+    "module.json": "bfdc54ec8bcdceef921da15723d719b7dd50814caf4e9581f6b88c7fbd995fa7",
     "settings_migrator.js": "457017eb5eb7f9cd6ee1dd0b463082e62a401724af7ba84b60d0c1dc822786cf"
   },
   "defs": {
@@ -24,7 +24,7 @@
     "S_PARTY_MEMBER_LIST": 7,
     "S_PARTY_MEMBER_STAT_UPDATE": 3,    
     "S_SPAWN_ME": 3,
-    "S_SPAWN_USER": 15,
+    "S_SPAWN_USER": 16,
     "S_USER_LOCATION": 5,
     "S_USER_LOCATION_IN_ACTION": 2
   }
