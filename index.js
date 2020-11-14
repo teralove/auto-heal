@@ -113,7 +113,7 @@ module.exports = function AutoHeal(mod) {
                 playerLocation.w = event.w;
             })
             
-            hook('S_SPAWN_USER', 15, (event) => {
+            hook('S_SPAWN_USER', 16, (event) => {
                 if (partyMembers.length != 0) {
                     let member = partyMembers.find(m => m.playerId === event.playerId);
                     if (member) {
